@@ -5,8 +5,8 @@ import { Text, View } from "@/components/Themed";
 
 export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
+    <View className="items-center justify-center flex-1 bg-gradient-to-bl from-slate-400 to-slate-600">
+      <Text className="text-xl font-bold">Tab One</Text>
       <View
         style={styles.separator}
         lightColor="#eee"
