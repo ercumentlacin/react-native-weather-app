@@ -8,14 +8,15 @@ import {
   SunDim,
   Wind,
 } from "lucide-react-native";
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import { Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { slate } from "tailwindcss/colors";
 
 const screenOptions = {
   headerStyle: { backgroundColor: slate["500"] },
-};
+} satisfies ComponentProps<typeof Stack.Screen>["options"];
+
 export default function HomeScreen() {
   const [city, setCity] = useState("New York");
   return (
