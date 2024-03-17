@@ -5,6 +5,7 @@ import { FlatList, Image, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { slate } from "tailwindcss/colors";
 
+import WeatherPart from "@/components/weather-part";
 import useHomeContainer from "@/hooks/containers/useHomeContainer";
 
 export default function HomeScreen() {
@@ -29,7 +30,7 @@ export default function HomeScreen() {
               placeholderTextColor={slate["50"]}
               defaultValue={city}
               onChangeText={debouncedSetCity}
-              keyboardType="web-search"
+              inputMode="search"
               onFocus={() => setIsKeyboardVisible(true)}
               onBlur={() => setIsKeyboardVisible(false)}
             />
@@ -85,77 +86,33 @@ export default function HomeScreen() {
           <View className="h-[1px] bg-slate-50 opacity-25" />
         </View>
 
-        <View className="flex-row flex-wrap justify-between py-4 mx-4 gap-y-4">
-          <View className="items-center w-6/12 space-y-4">
-            <View className="flex-row items-center justify-center pl-2 pr-3 space-x-2 rounded-full bg-slate-50/30">
-              <Image
-                source={{
-                  uri: weatherIconUrl,
-                }}
-                className="w-12 h-12 rounded-full text-slate-50/50"
-              />
-              <Text className="text-lg tracking-widest text-slate-50">
-                {todayForecast?.weather[0].main}
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-center space-x-2">
-              <Text className="text-3xl font-bold text-slate-50">
-                {todayForecast?.wind.speed}
-              </Text>
-              <Text className="text-3xl text-slate-50/50">km/h</Text>
-            </View>
-          </View>
+        <View className="flex-row flex-wrap justify-between py-4 mx-4">
+          <WeatherPart
+            label={todayForecast?.weather[0].main}
+            value={todayForecast?.wind.speed}
+            metric="km/h"
+            uri={weatherIconUrl}
+          />
+          <WeatherPart
+            label="Humidity"
+            value={todayForecast?.main.humidity}
+            metric="%"
+            Icon={Droplet}
+          />
 
-          <View className="items-center w-6/12 space-y-4">
-            <View className="flex-row items-center justify-center pl-2 pr-3 space-x-2 rounded-full bg-slate-50/30">
-              <View className="items-center justify-center w-12 h-12">
-                <Droplet size={24} color={slate["50"]} />
-              </View>
-              <Text className="text-lg tracking-widest text-slate-50">
-                Humidity
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-center">
-              <Text className="text-3xl font-bold text-slate-50">
-                {todayForecast?.main.humidity}
-              </Text>
-              <Text className="text-3xl text-slate-50/50">%</Text>
-            </View>
-          </View>
+          <WeatherPart
+            label="Feels"
+            value={todayForecast?.main.feels_like}
+            metric="°"
+            Icon={SunDim}
+          />
 
-          <View className="items-center w-6/12 space-y-4">
-            <View className="flex-row items-center justify-center pl-2 pr-3 rounded-full bg-slate-50/30">
-              <View className="items-center justify-center w-12 h-12">
-                <SunDim size={24} color={slate["50"]} />
-              </View>
-              <Text className="text-lg tracking-widest text-slate-50">
-                Feels
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-center">
-              <Text className="text-3xl font-bold text-slate-50">
-                {Math.floor(todayForecast?.main.feels_like ?? 0)}
-              </Text>
-              <Text className="text-3xl text-slate-50/50">°</Text>
-            </View>
-          </View>
-
-          <View className="items-center w-6/12 space-y-4">
-            <View className="flex-row items-center justify-center pl-2 pr-3 space-x-2 rounded-full bg-slate-50/30">
-              <View className="items-center justify-center w-12 h-12">
-                <Gauge size={24} color={slate["50"]} />
-              </View>
-              <Text className="text-lg tracking-widest text-slate-50">
-                Pressure
-              </Text>
-            </View>
-            <View className="flex-row items-center justify-center">
-              <Text className="text-3xl font-bold text-slate-50">
-                {todayForecast?.main.pressure}
-              </Text>
-              <Text className="text-3xl text-slate-50/50">hpa</Text>
-            </View>
-          </View>
+          <WeatherPart
+            label="Pressure"
+            value={todayForecast?.main.pressure}
+            metric="hpa"
+            Icon={Gauge}
+          />
         </View>
       </LinearGradient>
     </SafeAreaView>
