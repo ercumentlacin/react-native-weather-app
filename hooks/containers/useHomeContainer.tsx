@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Stack } from "expo-router";
-import { useState, type ComponentProps } from "react";
+import { useMemo, useState, type ComponentProps } from "react";
 import { slate } from "tailwindcss/colors";
 
 import useDebounceCallback from "@/hooks/useDebounceCallback";
@@ -10,6 +10,12 @@ import type {
   IGetCityResponse,
   IGetCityResponseWithoutLocalNames,
 } from "@/types/IGetCityResponse";
+
+interface HourlyForecastItem {
+  hour: string;
+  temp: number;
+  uri: string;
+}
 
 const screenOptions = {
   headerStyle: { backgroundColor: slate["500"] },
@@ -66,6 +72,32 @@ const useHomeContainer = () => {
 
   const weatherIconUrl = `http://openweathermap.org/img/wn/${todayForecast?.weather[0].icon}@2x.png`;
 
+  const hourlyForecast = useMemo(
+    () =>
+      fiveDayForecastData?.list.reduce((acc, item) => {
+        const now = new Date();
+        const itemDate = new Date(item.dt * 1000);
+        if (now <= itemDate && acc.length < 5) {
+          acc.push({
+            hour: item.dt_txt.split(" ")[1].slice(0, 5),
+            temp: Math.floor(item.main.temp),
+            uri: `http://openweathermap.org/img/wn/${item.weather[0].icon}.png`,
+          });
+        }
+        return acc;
+      }, [] as HourlyForecastItem[]),
+    [fiveDayForecastData?.list],
+  );
+
+  const hourlyForecastLabels = useMemo(
+    () => hourlyForecast?.map((item) => item.hour) ?? [],
+    [hourlyForecast],
+  );
+  const hourlyTemperatures = useMemo(
+    () => hourlyForecast?.map((item) => item.temp) ?? [],
+    [hourlyForecast],
+  );
+
   return {
     state: {
       city,
@@ -88,6 +120,11 @@ const useHomeContainer = () => {
       timeIn24HourFormat,
       screenOptions,
       weatherIconUrl,
+    },
+    computed: {
+      hourlyForecast,
+      hourlyForecastLabels,
+      hourlyTemperatures,
     },
   };
 };
