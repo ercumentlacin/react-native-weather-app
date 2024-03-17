@@ -5,6 +5,7 @@ import { FlatList, Image, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { slate } from "tailwindcss/colors";
 
+import WeatherChart from "@/components/weather-chart";
 import WeatherPart from "@/components/weather-part";
 import useHomeContainer from "@/hooks/containers/useHomeContainer";
 
@@ -13,6 +14,7 @@ export default function HomeScreen() {
     state: { city, isKeyboardVisible, cityData, todayForecast },
     actions: { onCitySelect, setIsKeyboardVisible, debouncedSetCity },
     values: { timeIn24HourFormat, screenOptions, weatherIconUrl },
+    computed: { hourlyForecast, hourlyForecastLabels, hourlyTemperatures },
   } = useHomeContainer();
 
   return (
@@ -114,6 +116,16 @@ export default function HomeScreen() {
             Icon={Gauge}
           />
         </View>
+
+        {hourlyForecast && hourlyForecast.length > 0 && (
+          <View className="mx-4 mb-5 border-t border-slate-50/50">
+            <WeatherChart
+              labels={hourlyForecastLabels}
+              data={hourlyTemperatures}
+              hourlyForecast={hourlyForecast}
+            />
+          </View>
+        )}
       </LinearGradient>
     </SafeAreaView>
   );
