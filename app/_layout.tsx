@@ -58,7 +58,6 @@ function RootLayoutNav() {
       <QueryClientProvider client={queryClient}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         </Stack>
       </QueryClientProvider>
     </ThemeProvider>
