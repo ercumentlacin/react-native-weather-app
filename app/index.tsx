@@ -1,65 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 import { Droplet, Gauge, SunDim } from "lucide-react-native";
-import { useState, type ComponentProps } from "react";
 import { FlatList, Image, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { slate } from "tailwindcss/colors";
 
-import useDebounceCallback from "@/hooks/useDebounceCallback";
-import { getCityQueryOptions } from "@/queryOptions/getCityQueryOptions";
-import { getFiveDayForecastQueryOptions } from "@/queryOptions/getFiveDayForecastQueryOptions";
-import type {
-  IGetCityResponse,
-  IGetCityResponseWithoutLocalNames,
-} from "@/types/IGetCityResponse";
-
-const screenOptions = {
-  headerStyle: { backgroundColor: slate["500"] },
-} satisfies ComponentProps<typeof Stack.Screen>["options"];
-
-const mapCityData = (
-  data: IGetCityResponse[],
-): IGetCityResponseWithoutLocalNames[] => {
-  const map = new Map<string, IGetCityResponseWithoutLocalNames>();
-
-  for (const city of data) {
-    const cityIdentifier = `${city.name}, ${city.country}`;
-
-    map.set(cityIdentifier, {
-      name: city.name,
-      country: city.country,
-      lat: city.lat,
-      lon: city.lon,
-    });
-  }
-  return Array.from(map.values());
-};
-const timeIn24HourFormat = new Date().toLocaleTimeString("en-US", {
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
-});
+import useHomeContainer from "@/hooks/containers/useHomeContainer";
 
 export default function HomeScreen() {
-  const [city, setCity] = useState("Istanbul");
-  const [lat, setLat] = useState(41.009198);
-  const [lon, setLon] = useState(28.966219);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-
-  const debouncedSetCity = useDebounceCallback(setCity, 500);
-
-  const { data: cityData } = useQuery({
-    ...getCityQueryOptions(city),
-    select: mapCityData,
-  });
-  const { data: fiveDayForecastData } = useQuery({
-    ...getFiveDayForecastQueryOptions(lat, lon),
-    enabled: lat !== 0 && lon !== 0,
-  });
-
-  const todayForecast = fiveDayForecastData?.list[0];
+  const {
+    state: { city, isKeyboardVisible, cityData, todayForecast },
+    actions: { onCitySelect, setIsKeyboardVisible, debouncedSetCity },
+    values: { timeIn24HourFormat, screenOptions, weatherIconUrl },
+  } = useHomeContainer();
 
   return (
     <SafeAreaView className="flex-1 bg-slate-400">
@@ -91,12 +44,7 @@ export default function HomeScreen() {
                       key={`${item.name}, ${item.country}`}
                       numberOfLines={1}
                       ellipsizeMode="tail"
-                      onPress={() => {
-                        setLat(item.lat);
-                        setLon(item.lon);
-                        setCity(item.name);
-                        setIsKeyboardVisible(false);
-                      }}
+                      onPress={() => onCitySelect(item)}
                     >
                       <Text className="text-lg text-slate-900">
                         {item.name}, {item.country}
@@ -120,7 +68,7 @@ export default function HomeScreen() {
         <View className="flex-row items-center justify-center m-4 space-x-8 align-bottom">
           <Image
             source={{
-              uri: `http://openweathermap.org/img/wn/${todayForecast?.weather[0].icon}@2x.png`,
+              uri: weatherIconUrl,
             }}
             style={{ width: 100, height: 100 }}
           />
@@ -142,7 +90,7 @@ export default function HomeScreen() {
             <View className="flex-row items-center justify-center pl-2 pr-3 space-x-2 rounded-full bg-slate-50/30">
               <Image
                 source={{
-                  uri: `http://openweathermap.org/img/wn/${todayForecast?.weather[0].icon}@2x.png`,
+                  uri: weatherIconUrl,
                 }}
                 className="w-12 h-12 rounded-full text-slate-50/50"
               />
