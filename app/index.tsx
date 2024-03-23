@@ -2,6 +2,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 import { Droplet, Gauge, SunDim } from "lucide-react-native";
 import { FlatList, Image, Text, TextInput, View } from "react-native";
+import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { slate } from "tailwindcss/colors";
 
@@ -14,7 +15,15 @@ export default function HomeScreen() {
     state: { city, isKeyboardVisible, cityData, todayForecast },
     actions: { onCitySelect, setIsKeyboardVisible, debouncedSetCity },
     values: { timeIn24HourFormat, screenOptions, weatherIconUrl },
-    computed: { hourlyForecast, hourlyForecastLabels, hourlyTemperatures },
+    computed: {
+      hourlyForecast,
+      hourlyForecastLabels,
+      hourlyTemperatures,
+      animatedStyleOne,
+      animatedStyleTwo,
+      animatedStyleThree,
+      animatedStyleFour,
+    },
   } = useHomeContainer();
 
   return (
@@ -88,33 +97,59 @@ export default function HomeScreen() {
           <View className="h-[1px] bg-slate-50 opacity-25" />
         </View>
 
-        <View className="flex-row flex-wrap justify-between py-4 mx-4">
-          <WeatherPart
-            label={todayForecast?.weather[0].main}
-            value={todayForecast?.wind.speed}
-            metric="km/h"
-            uri={weatherIconUrl}
-          />
-          <WeatherPart
-            label="Humidity"
-            value={todayForecast?.main.humidity}
-            metric="%"
-            Icon={Droplet}
-          />
+        <View
+          className="flex-row flex-wrap justify-between py-4 mx-4"
+          style={{
+            flex: 4,
+          }}
+        >
+          <Animated.View
+            style={animatedStyleOne}
+            className="items-center justify-center grow shrink-0"
+          >
+            <WeatherPart
+              label={todayForecast?.weather[0].main}
+              value={todayForecast?.wind.speed}
+              metric="km/h"
+              uri={weatherIconUrl}
+            />
+          </Animated.View>
 
-          <WeatherPart
-            label="Feels"
-            value={todayForecast?.main.feels_like}
-            metric="°"
-            Icon={SunDim}
-          />
+          <Animated.View
+            style={animatedStyleTwo}
+            className="items-center justify-center grow shrink-0"
+          >
+            <WeatherPart
+              label="Humidity"
+              value={todayForecast?.main.humidity}
+              metric="%"
+              Icon={Droplet}
+            />
+          </Animated.View>
 
-          <WeatherPart
-            label="Pressure"
-            value={todayForecast?.main.pressure}
-            metric="hpa"
-            Icon={Gauge}
-          />
+          <Animated.View
+            style={animatedStyleThree}
+            className="items-center justify-center grow shrink-0"
+          >
+            <WeatherPart
+              label="Feels"
+              value={todayForecast?.main.feels_like}
+              metric="°"
+              Icon={SunDim}
+            />
+          </Animated.View>
+
+          <Animated.View
+            style={animatedStyleFour}
+            className="items-center justify-center grow shrink-0"
+          >
+            <WeatherPart
+              label="Pressure"
+              value={todayForecast?.main.pressure}
+              metric="hpa"
+              Icon={Gauge}
+            />
+          </Animated.View>
         </View>
 
         {hourlyForecast && hourlyForecast.length > 0 && (
