@@ -35,3 +35,7 @@ I used EsLint and Prettier for linting and formatting. You can check the rules i
 ## Api Reference
 
 I used OpenWeatherMap API to get weather data. You can check the documentation [here](https://openweathermap.org/api).
+
+## Screenshots
+
+![Home Screen](./screenshot.gif)
