@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Stack } from "expo-router";
-import { useMemo, useState, type ComponentProps } from "react";
+import { useEffect, useMemo, useState, type ComponentProps } from "react";
+import {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { slate } from "tailwindcss/colors";
 
 import useDebounceCallback from "@/hooks/useDebounceCallback";
@@ -98,6 +103,49 @@ const useHomeContainer = () => {
     [hourlyForecast],
   );
 
+  const opacityOne = useSharedValue(0);
+  const opacityTwo = useSharedValue(0);
+  const opacityThree = useSharedValue(0);
+  const opacityFour = useSharedValue(0);
+
+  useEffect(() => {
+    const delay = 500;
+    opacityOne.value = withTiming(1, { duration: 1000 });
+    setTimeout(() => {
+      opacityTwo.value = withTiming(1, { duration: 1000 });
+    }, delay);
+    setTimeout(() => {
+      opacityThree.value = withTiming(1, { duration: 1000 });
+    }, delay * 2);
+    setTimeout(() => {
+      opacityFour.value = withTiming(1, { duration: 1000 });
+    }, delay * 3);
+  }, []);
+
+  const animatedStyleOne = useAnimatedStyle(() => {
+    return {
+      opacity: opacityOne.value,
+    };
+  });
+
+  const animatedStyleTwo = useAnimatedStyle(() => {
+    return {
+      opacity: opacityTwo.value,
+    };
+  });
+
+  const animatedStyleThree = useAnimatedStyle(() => {
+    return {
+      opacity: opacityThree.value,
+    };
+  });
+
+  const animatedStyleFour = useAnimatedStyle(() => {
+    return {
+      opacity: opacityFour.value,
+    };
+  });
+
   return {
     state: {
       city,
@@ -125,6 +173,10 @@ const useHomeContainer = () => {
       hourlyForecast,
       hourlyForecastLabels,
       hourlyTemperatures,
+      animatedStyleOne,
+      animatedStyleTwo,
+      animatedStyleThree,
+      animatedStyleFour,
     },
   };
 };
