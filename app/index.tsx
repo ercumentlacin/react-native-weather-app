@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack } from "expo-router";
+import { Stack, type ErrorBoundaryProps } from "expo-router";
 import { Droplet, Gauge, SunDim } from "lucide-react-native";
 import { FlatList, Image, Text, TextInput, View } from "react-native";
 import Animated from "react-native-reanimated";
@@ -163,5 +163,14 @@ export default function HomeScreen() {
         )}
       </LinearGradient>
     </SafeAreaView>
+  );
+}
+
+export function ErrorBoundary(props: ErrorBoundaryProps) {
+  return (
+    <View style={{ flex: 1, backgroundColor: "red" }}>
+      <Text>{props.error.message}</Text>
+      <Text onPress={props.retry}>Try Again?</Text>
+    </View>
   );
 }
