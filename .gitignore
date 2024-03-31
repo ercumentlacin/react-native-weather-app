@@ -42,3 +42,7 @@ expo-env.d.ts
 
 # enviorment
 .env
+
+# build
+android/
+eas*
